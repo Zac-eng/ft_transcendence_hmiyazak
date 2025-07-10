@@ -1,3 +1,5 @@
 #!/bin/bash
 
-echo server
+npm install express cors
+
+node ./src/main.js

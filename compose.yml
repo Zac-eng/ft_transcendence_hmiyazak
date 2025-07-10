@@ -10,16 +10,24 @@ services:
     restart: always
     networks:
       - backend
-    # depends_on:
-    #   - server
+    depends_on:
+      - server
 
   server:
     container_name: server
     build: ./server
     restart: always
+    volumes:
+      - server:/home/server
+    # this port is open just for experiment
+    ports:
+      - 8081:8081
     networks:
       - backend
       - database
+    secrets:
+      - key
+      - cert
     depends_on:
       - database
 
@@ -37,9 +45,21 @@ volumes:
       type: none
       o: bind
       device: ./client
+  server:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./server
 
 networks:
   backend:
     driver: bridge
   database:
     driver: bridge
+
+secrets:
+  key:
+    file: ./secrets/key.pem
+  cert:
+    file: ./secrets/cert.pem
